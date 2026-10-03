@@ -1,0 +1,10 @@
+node_modules/
+.next/
+dist/
+.env
+.env.*
+!.env.example
+troika-private/
+
+# local preview helper, for when PHP is not installed
+serve-dist.py

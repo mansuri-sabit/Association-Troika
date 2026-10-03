@@ -1,0 +1,174 @@
+# Troika AI Partner Association Program - static site
+# Clean URLs (/ai-calling-pricing-india instead of the .html file), caching,
+# compression, and a set of security defaults. Everything here is HTML, CSS, JS
+# and media: no PHP or any other server-side code runs here, and the rules below
+# are written to keep it that way.
+
+# Kept exactly as it was: this host already accepts these two.
+Options -Indexes
+DirectoryIndex index.html
+
+# ---------------------------------------------------------------------------
+# Nothing on this site is executable
+# ---------------------------------------------------------------------------
+# The usual leftover from a compromise is a script dropped somewhere under
+# public_html. There is no server-side code here to begin with, so refuse to
+# hand any of it to an interpreter or to a visitor, wherever it turns up.
+
+<FilesMatch "\.(php|php[0-9]|phtml|phps|phar|pl|py|cgi|sh|bash|lua|rb|jsp|asp|aspx|exe|so|dll)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+
+<IfModule mod_mime.c>
+  RemoveHandler .php .phtml .php5 .php7 .php8 .phar .cgi .pl .py
+  RemoveType .php .phtml .php5 .php7 .php8 .phar .cgi .pl .py
+</IfModule>
+
+# Files a visitor never needs: configuration, archives, databases, editor
+# leftovers. Serving any of these is how credentials and source leak.
+<FilesMatch "\.(env|ini|log|sql|sqlite|db|bak|backup|old|orig|save|swp|swo|tmp|dist|lock|yml|yaml|sh|inc|cfg|conf)$|~$|^(composer\.json|package(-lock)?\.json|wp-config\.php|\.git.*)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Hide dotfiles, but keep /.well-known reachable for SSL renewals
+RedirectMatch 404 /\.(?!well-known)
+
+# ---------------------------------------------------------------------------
+# Clean URLs
+# ---------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # a static site answers GET, HEAD and POST; anything else is a probe
+  RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|POST|OPTIONS)$
+  RewriteRule .* - [F,L]
+
+
+  # /index.html -> /
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^ / [R=301,L]
+
+  # any other .html address -> the slash form, in one hop rather than two
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1/ [R=301,L,NE]
+
+  # Every address on this site ends in a slash, because that is the form the
+  # pages were indexed under. /slug redirects to /slug/ ...
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([a-z0-9-]+)$ /$1/ [R=301,L,NE]
+
+  # ... and /slug/ serves slug.html without changing the address bar
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([a-z0-9-]+)/$ $1.html [L]
+
+  # Anything left over goes to the home page rather than an error page. Assets
+  # are excluded: a missing image should fail as a missing image, not hand back
+  # a page of HTML. Temporary, so it can be swapped for a real 404 page later.
+  RewriteCond %{REQUEST_URI} !^/$
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !\.(css|js|json|xml|txt|map|webp|avif|png|jpe?g|gif|svg|ico|woff2?|ttf|otf|eot|mp3|ogg|mp4|pdf|zip)$ [NC]
+  RewriteRule ^ / [R=302,L]
+</IfModule>
+
+
+# ---------------------------------------------------------------------------
+# Compression
+# ---------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
+    text/javascript application/javascript application/x-javascript application/json \
+    image/svg+xml application/xml application/rss+xml font/ttf font/otf
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Caching
+# ---------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  # servers differ on which of these two they send for a .js file, so set both
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType audio/mpeg "access plus 1 year"
+  ExpiresByType audio/ogg "access plus 1 year"
+  ExpiresByType application/xml "access plus 1 day"
+  ExpiresByType text/plain "access plus 1 day"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# Security headers
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Stay on HTTPS for a year. Add ; includeSubDomains once every subdomain
+  # (mail, webmail, cpanel, any staging host) is reachable over HTTPS - it is
+  # not reversible until the max-age runs out.
+  Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
+
+  # This site asks for none of these
+  Header always set Permissions-Policy "accelerometer=(), autoplay=(self), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()"
+
+  # Keep the browsing context to ourselves
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-site"
+
+  # Everything the page loads is served from this domain. 'unsafe-inline' is needed because
+  # the pages carry their own style and script blocks; it is still worth setting,
+  # since it stops anything being pulled in from another origin.
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; frame-src 'none'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+
+  # No point advertising the stack
+  Header unset X-Powered-By
+  Header unset X-Pingback
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.pdf$">
+    Header set Content-Disposition "inline"
+  </FilesMatch>
+</IfModule>
+
+AddType application/pdf .pdf
+AddType audio/mpeg .mp3
+AddType audio/ogg .ogg
+AddType image/webp .webp
+AddType image/avif .avif
+AddType font/woff2 .woff2

@@ -1,0 +1,15 @@
+{
+  "name": "association",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "preview": "php -S 127.0.0.1:8001 -t dist _dev-router.php",
+    "postbuild": "node scripts/tidy-export.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  }
+}

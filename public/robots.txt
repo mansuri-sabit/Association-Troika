@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://association.troikatech.in/sitemap.xml
