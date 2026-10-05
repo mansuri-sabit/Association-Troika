@@ -282,7 +282,7 @@ em{font-style:normal;color:var(--v)}
 .useg-c li{padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-family:var(--ui);font-size:12.5px;font-weight:600;color:var(--ink)}
 /* same warm mesh as the hero, sitting behind the right column */
 .tro-col{position:relative;padding-top:clamp(16px,3.4vw,52px)}
-.tro-col:before{content:"";position:absolute;inset:-14% -18% -12% -10%;z-index:-1;pointer-events:none;background:radial-gradient(620px 420px at 84% 14%,rgba(167,139,250,.18),transparent 70%),radial-gradient(520px 380px at 12% 86%,rgba(245,158,11,.13),transparent 70%);-webkit-mask-image:radial-gradient(115% 95% at 50% 50%,#000 48%,transparent 100%);mask-image:radial-gradient(115% 95% at 50% 50%,#000 48%,transparent 100%)}
+.tro-col:before{content:"";position:absolute;inset:-14% 0 -12% 0;z-index:-1;pointer-events:none;background:radial-gradient(620px 420px at 84% 14%,rgba(167,139,250,.18),transparent 70%),radial-gradient(520px 380px at 12% 86%,rgba(245,158,11,.13),transparent 70%);-webkit-mask-image:radial-gradient(115% 95% at 50% 50%,#000 48%,transparent 100%);mask-image:radial-gradient(115% 95% at 50% 50%,#000 48%,transparent 100%)}
 .shot--tro{position:relative;position:sticky;top:110px;align-self:start}
 .shot--tro .shot-seal{left:50%;transform:translateX(-50%);bottom:26px;white-space:nowrap}
 /* the second big headline now lives in its own banner, not under the list */
@@ -778,6 +778,47 @@ em{font-style:normal;color:var(--v)}
 .fab svg{width:26px;height:26px}
 @media (max-width:520px){.fab span{display:none}.fab{padding:13px}}
 
+/* ---- mobile pass over everything added in this redesign ---- */
+@media (max-width:991px){
+  /* the eyebrow pill is nowrap and will not fit a phone otherwise */
+  .hero-meta{white-space:normal;flex-wrap:wrap;row-gap:6px;padding:7px 12px}
+  .hero-meta s{display:none}
+  /* the why list runs five rows down two columns; stack it */
+  #why .deps{grid-auto-flow:row;grid-template-rows:none;grid-template-columns:1fr}
+  /* glass pills on the photos must be able to wrap */
+  .shot-seal{left:16px;right:16px;bottom:14px;justify-content:center}
+  .shot--tro .shot-seal,.shot--ab .shot-seal{left:16px;transform:none;white-space:normal}
+  .shot-seal span{white-space:normal;text-align:center}
+  /* task/owner rows wrap rather than squeezing the badge */
+  .matrix li{flex-wrap:wrap;row-gap:10px}
+  .own{white-space:normal}
+}
+@media (max-width:760px){
+  .sec{padding:clamp(40px,9vw,64px) 0}
+  .kick b{width:34px;height:34px;font-size:12.5px}
+  .kick{font-size:11.5px;gap:10px}
+  /* the figures column and its label sit over two lines on a phone */
+  .eqn li{grid-template-columns:1fr;gap:4px}
+  /* 50 columns of dots is sub-pixel on a phone */
+  #example .dots{grid-template-columns:repeat(25,1fr);gap:3px}
+  /* footer: drop the desktop spacer and the FAB clearance */
+  .ft-top{grid-template-columns:1fr;gap:30px}
+  .ft-top>div:first-child{margin-right:0}
+  .ft-bot{padding-right:0;gap:8px}
+  .ft-bot span:last-child,.ft-bot p:last-child{padding-bottom:64px}
+  /* tables of numbers need room to wrap */
+  .out-rows b,.bar b{white-space:normal}
+  .rcpt div{flex-wrap:wrap;row-gap:4px}
+  .close-r .cta-btns .btn{width:100%;justify-content:center}
+  .pilot-foot .pf-top{align-items:flex-start}
+  .pilot-foot .btn{width:100%;justify-content:center}
+}
+@media (max-width:520px){
+  .ft-tag{max-width:none}
+  .cmp-c li{grid-template-columns:20px 1fr;column-gap:10px}
+  .take{flex-direction:column;gap:12px}
+  .roles,.lead-roles{gap:6px}
+}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*:before,*:after{animation:none!important;transition:none!important}
@@ -1337,7 +1378,7 @@ em{font-style:normal;color:var(--v)}
     <div class="ft-top">
       <div>
         <img src="/assets/img/troika/troika-logo-footer.webp" alt="Troika Tech" width="420" height="103" loading="lazy">
-        <p class="ft-tag">Let&rsquo;s empower your business community <em>with AI.</em></p>
+        <p class="ft-tag">Let&rsquo;s empower your business community<br><em>with AI.</em></p>
         <p style="margin-top:14px">AI Created.<br>Human Perfected.</p>
       </div>
       <div>
@@ -1353,7 +1394,7 @@ em{font-style:normal;color:var(--v)}
       <div>
         <h4>Troika Tech</h4>
         <ul>
-          <li><a href="https://troikatech.in/">troikatech.in</a></li>
+          <li><a href="https://troikatech.in/">Website</a></li>
           <li><a href="https://troikatech.in/ai-calling-services/">AI Calling</a></li>
           <li><a href="https://troikatech.in/troika-tech-ai-privacy-policy/">Privacy Policy</a></li>
           <li><a href="https://troikatech.in/troika-tech-ai-terms/">Terms</a></li>
