@@ -171,9 +171,11 @@ em{font-style:normal;color:var(--v)}
 .hd-nav a:hover{background:rgba(22,18,43,.06)}
 .hd-nav a.is-active{background:var(--ink);color:#fff}
 .hd .btn{padding:12px 20px;font-size:15px}
-.hd-burger{display:none;margin-left:auto;width:44px;height:44px;border-radius:50%;border:1px solid var(--ink);background:none;cursor:pointer;place-items:center}
-.hd-burger span{display:block;width:18px;height:1.5px;background:var(--ink);transition:transform .3s}
-.hd-burger span+span{margin-top:5px}
+.hd-burger{display:none;margin-left:auto;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border:0;border-radius:0;background:none;cursor:pointer}
+.hd-burger span{display:block;width:22px;height:2.5px;border-radius:100px;background:var(--ink);transition:transform .3s,background .2s,width .2s}
+.hd-burger span:last-child{width:15px;align-self:flex-end}
+.hd-burger:hover span,.hd-burger:focus-visible span{background:var(--v)}
+.hd.is-open .hd-burger span:last-child{width:22px;align-self:center}
 .hd.is-open .hd-burger span:first-child{transform:translateY(3.25px) rotate(45deg)}
 .hd.is-open .hd-burger span:last-child{transform:translateY(-3.25px) rotate(-45deg)}
 .hd-prog{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--v);transform-origin:0;transform:scaleX(var(--p,0))}
@@ -183,7 +185,7 @@ em{font-style:normal;color:var(--v)}
   .hd-nav a.is-active{background:none;color:var(--v)}
   .hd.is-open .hd-nav{opacity:1;transform:none;pointer-events:auto}
   .hd.is-open{background:var(--paper)}
-  .hd-burger{display:grid}
+  .hd-burger{display:flex}
   .hd .hd-cta{display:none}
 }
 
@@ -379,6 +381,74 @@ em{font-style:normal;color:var(--v)}
 .tk--cta span{display:inline-flex;align-items:center;gap:8px;font-family:var(--ui);font-weight:600;color:var(--gold2)}
 .tk--cta svg{width:18px;height:18px}
 @media (max-width:1060px){.tix{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){
+  /* the scrolled header was 86% white over the hero tint, which read as a
+     washed strip against the full-strength colour below it */
+  .hd.is-scrolled{background:#fff}
+  /* the programme line may wrap to two lines; INDIA stays a full-height chip
+     on the right, the way it sits on desktop */
+  .hero-meta{align-items:stretch;flex-wrap:nowrap;font-size:10px;letter-spacing:.1em;padding:5px 7px 5px 12px;gap:0}
+  /* on a phone the dot and the "Troika launches" preamble cost a whole line
+     for no information, so the pill carries just the programme name */
+  .hero-meta i{align-self:center;flex:none;box-shadow:none}
+  .hero .hero-meta>span:not(.loc){font-size:0;letter-spacing:0;word-spacing:0;margin:0 8px 0 5px}
+  .st-meta>span:not(.loc){margin:0 8px 0 5px}
+  .hero .hero-meta>span:not(.loc):after{content:"AI Partner Association Program";font-size:10px;letter-spacing:.1em;white-space:nowrap}
+  .hero-meta>span:not(.loc){flex:1 1 auto;min-width:0;white-space:normal;align-self:center;line-height:1.45}
+  .hero-meta .loc{display:flex;align-items:center;flex:none;white-space:nowrap;font-size:11px;padding:0 13px;letter-spacing:.1em}
+  .hero-meta s{display:none}
+}
+/* 320px (iPhone SE and similar) needs one more step down */
+@media (max-width:340px){
+  .hero-meta{font-size:8px;letter-spacing:.02em;padding:5px 3px 5px 11px;gap:7px}
+  .hero .hero-meta>span:not(.loc):after{font-size:8px;letter-spacing:.02em}
+  .hero-meta .loc{font-size:9px;padding:0 8px;letter-spacing:.04em}
+}
+/* narrow phones: keep the programme name on a single line */
+@media (max-width:400px){
+  .hero-meta{font-size:9px;letter-spacing:.05em;padding:5px 6px 5px 11px;gap:0}
+  .hero .hero-meta>span:not(.loc):after{font-size:9px;letter-spacing:.05em}
+  .hero-meta .loc{font-size:10px;padding:0 10px;letter-spacing:.06em}
+}
+/* the hero reserved 150px above the fold for a fixed header that is 78px tall */
+@media (max-width:620px){
+  .wrap{width:min(1200px,100% - 80px)}
+  /* the photo wrapper kept position:sticky on phones, so it rode over the
+     text below it. The old override only reached .troika .slot. */
+  .shot--tro{position:relative;top:auto}
+  .troika .slot{position:relative;top:0}
+  #example{padding-top:72px}
+  .sav{margin-top:26px}
+  #savings .lead{margin-top:12px}
+  .hero{padding-top:96px}
+  .hero-ctas .btn--line{display:none}
+  .hero-grid{gap:28px}
+  .hero h1{margin-top:16px}
+}
+/* ---- phone pass 2: things that fit but read cramped ---- */
+@media (max-width:620px){
+  /* the invited strip was still two columns, squeezing each label */
+  .invited{grid-template-columns:1fr;border-bottom:0}
+  .invited>*{padding:12px 0;border-left:0;border-top:1px solid var(--line);justify-content:flex-start;text-align:left}
+  .invited>*:first-child{border-top:0;padding-bottom:4px}
+  /* the explicit <br> in each label forced "Business / Associations" onto two
+     ragged lines; on a phone there is room for one */
+  .invited br{display:none}
+  .invited>*{padding:11px 0;gap:11px;align-items:center;font-size:17px;line-height:1.3}
+  .invited>*:first-child{font-size:11px;letter-spacing:.14em;padding-bottom:6px}
+  .invited span:before{width:6px;height:6px;margin:0}
+  /* card header: tag pill and status pill stop fighting over one line */
+  #example .field-h{flex-direction:column;align-items:flex-start;gap:8px}
+  #example .field-h>span:last-child{align-self:flex-start}
+  /* hero eyebrow was a three-line rounded box */
+  .hero-meta{gap:6px 8px;padding:6px 12px;line-height:1.35}
+  .hero-meta .loc{padding:3px 9px}
+  /* two-column rows inside cards go single file */
+  .cmp-c li{grid-template-columns:20px 1fr;column-gap:10px}
+  .eqn li{grid-template-columns:1fr}
+  .ben{grid-template-columns:1fr;gap:6px}
+  .ben-n{font-size:34px}
+}
 @media (max-width:520px){.tix{grid-template-columns:1fr}.tk{min-height:0}}
 
 /* 06 SAVINGS */
@@ -430,7 +500,7 @@ em{font-style:normal;color:var(--v)}
 #example .fields{margin-top:26px;gap:18px}
 #example .field{padding:clamp(20px,2.3vw,26px)}
 #example .field-t{margin-bottom:0}
-#example .field-h{align-items:center}
+@media (min-width:621px){#example .field-h{align-items:center}}
 /* one bright live call; everything it has already been through stays faint */
 #example .dots i.on{background:var(--ink2);box-shadow:0 0 9px rgba(22,18,43,.5);transform:scale(1.5)}
 #example .dots i.was{background:#CFC3F0}
@@ -782,16 +852,20 @@ em{font-style:normal;color:var(--v)}
 /* ---- mobile pass over everything added in this redesign ---- */
 @media (max-width:991px){
   /* the eyebrow pill is nowrap and will not fit a phone otherwise */
-  .hero-meta{white-space:normal;flex-wrap:wrap;row-gap:6px;padding:7px 12px}
+  .hero-meta{white-space:normal;flex-wrap:nowrap;align-items:stretch;padding:5px 7px 5px 12px;gap:0}
   .hero-meta s{display:none}
   /* the why list runs five rows down two columns; stack it */
   #why .deps{grid-auto-flow:row;grid-template-rows:none;grid-template-columns:1fr}
   /* glass pills on the photos must be able to wrap */
-  .shot-seal{left:16px;right:16px;bottom:14px;justify-content:center}
-  .shot--tro .shot-seal,.shot--ab .shot-seal{left:16px;transform:none;white-space:normal}
-  .shot-seal span{white-space:normal;text-align:center}
+  .shot-seal{left:18px;right:auto;transform:none;bottom:14px;padding:6px 13px;gap:7px;justify-content:flex-start}
+  .shot--tro .shot-seal,.shot--ab .shot-seal{left:18px;transform:none;white-space:normal}
+  .shot-seal span{white-space:nowrap;text-align:center;font-size:10.5px;letter-spacing:.03em}
+  .shot-seal svg{width:13px;height:13px}
   /* task/owner rows wrap rather than squeezing the badge */
-  .matrix li{flex-wrap:wrap;row-gap:10px}
+  .matrix li{flex-wrap:wrap;row-gap:8px}
+  .matrix .own{margin-left:auto}
+  .matrix .is-you{flex-direction:column;align-items:center;text-align:center;row-gap:12px}
+  .matrix .is-you .own{margin:0}
   .own{white-space:normal}
 }
 @media (max-width:760px){
@@ -812,7 +886,11 @@ em{font-style:normal;color:var(--v)}
   .rcpt div{flex-wrap:wrap;row-gap:4px}
   .close-r .cta-btns .btn{width:100%;justify-content:center}
   .pilot-foot .pf-top{align-items:flex-start}
-  .pilot-foot .btn{width:100%;justify-content:center}
+  #pilot .pilot-foot{display:flex;flex-direction:column;align-items:stretch}
+  #pilot .pf-top{display:contents}
+  #pilot .pf-k{order:1}
+  #pilot .pf-copy{order:2;margin-top:12px}
+  #pilot .pilot-foot .btn{order:3;width:100%;justify-content:flex-start;padding-left:22px;margin-top:22px}
 }
 @media (max-width:520px){
   .ft-tag{max-width:none}
@@ -876,11 +954,11 @@ em{font-style:normal;color:var(--v)}
       </div>
     </div>
     <div class="invited rv">
-      <p>Inviting<br>selected</p>
-      <span>Business<br>Associations</span>
-      <span>Trade<br>Bodies</span>
-      <span>Chambers of<br>Commerce</span>
-      <span>Professional<br>Networks</span>
+      <p>Inviting <br>selected</p>
+      <span>Business <br>Associations</span>
+      <span>Trade <br>Bodies</span>
+      <span>Chambers of <br>Commerce</span>
+      <span>Professional <br>Networks</span>
     </div>
   </div>
 </section>
@@ -922,7 +1000,7 @@ em{font-style:normal;color:var(--v)}
           <img src="/assets/images/association/program.webp" alt="Association event introducing AI Calling to members" width="1600" height="1000" loading="lazy" decoding="async">
           <figcaption class="slot-ph"><b>program.webp</b><span>1600 &times; 1000 landscape &middot; association event, webinar or member meeting</span></figcaption>
         </figure>
-        <div class="shot-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>100% Fully Managed by Troika</span></div>
+        <div class="shot-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>100% Fully Managed</span></div>
       </div>
       <div class="rv" style="--d:.1s">
         <p class="hero-meta st-meta"><i></i><span>Operational Model</span><s></s><span class="loc">Zero Overhead</span></p>
